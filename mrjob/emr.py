@@ -578,6 +578,12 @@ class EMRJobRunner(MRJobRunner):
         """
         super(EMRJobRunner, self).__init__(**kwargs)
 
+        # apply boto configuration overrides from self._opts
+        if 'boto' in self._opts:
+            for namespace, namespace_config in self._opts['boto'].iteritems():
+                for option, value in namespace_config.iteritems():
+                    boto.config.set(namespace, option, value)
+
         # make aws_region an instance variable; we might want to set it
         # based on the scratch bucket
         self._aws_region = self._opts['aws_region'] or ''
